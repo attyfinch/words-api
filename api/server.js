@@ -7,6 +7,8 @@ const server = express();
 
 server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
+
+/* Routers */
 server.use('/wordle', WordleRouter);
 server.use('/spellingbee', SpellingBeeRouter);
 
