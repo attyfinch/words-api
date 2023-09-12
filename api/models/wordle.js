@@ -78,8 +78,6 @@ async function getWords(filter) {
     return response;
 };
 
-
-
 module.exports = {
     getWordById,
     getWords

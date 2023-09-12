@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const WordleRouter = require('./routers/wordleRouter');
-const SpellingBeeRouter = require('./routers/spellingbee');
+const SpellingBeeRouter = require('./routers/spellingbeeRouter');
 
 const server = express();
 
