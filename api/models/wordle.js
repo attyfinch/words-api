@@ -1,5 +1,4 @@
 const db = require('../../dbconfig');
-
 /* 
     MVP request to prove db can be queried. Does not pertiain to Wordle functionality.
     This is primarily used for QA.

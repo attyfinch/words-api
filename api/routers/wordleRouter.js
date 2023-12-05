@@ -10,7 +10,7 @@ const { validateReqShape } = require('../middleware/wordleMiddleware')
         {
             "positions": "AMBER",
             "include": "_____",
-            "exclude": "____",
+            "exclude": "",
             "char1Exclude": "",
             "char2Exclude": "",
             "char3Exclude": "____",
@@ -20,9 +20,8 @@ const { validateReqShape } = require('../middleware/wordleMiddleware')
 
         Requirements + Notes
         [1] Request body must be an object, values must be strings.
-        
-        [2] "positions + "include" should contain underscores where where there are  no characters. See "include" above for example where no letters are passed in.
-
+        [2] "positions + "include" keys should contain underscores where where there are no characters. 
+            See "include" above for example where no letters are passed in.
         [3] All values in request body have max size limits. Exclude max size is 15 characters, all other values max size is 5 characters.
 */
 router.post('/', validateReqShape, (req, res, next) => {
@@ -39,9 +38,7 @@ router.post('/', validateReqShape, (req, res, next) => {
     Does not pertiain to Wordle functionality.
 */
 router.get('/:id', (req, res, next) => {
-
     const { id } = req.params;
-
     Wordle.getWordById(id)
         .then((word) => {
             if (word !== undefined) {
