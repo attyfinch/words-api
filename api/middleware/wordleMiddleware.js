@@ -1,15 +1,17 @@
 const Wordle = require('../models/wordle');
 
 /*
-    validateReqShape working as intended.
+    Positions key/value middleware complete. 
 
     To-do:
+    - Create middleware for key/values other than Positions
     - Write more descriptive error messages
     - Spell/grammar check
 */
 
-async function validateReqShape(req, res, next) {
 
+// Deprecated, but keeping for referene until middleware complete
+async function validateReqShape(req, res, next) {
     const { positions, 
             include, 
             exclude, 
@@ -55,6 +57,71 @@ async function validateReqShape(req, res, next) {
     next();
 };
 
+// Deprecated, but keeping for referene until middleware complete
+async function validateReqValueLength(req, res, next) {
+
+    const { positions, 
+        include, 
+        exclude, 
+        char1Exclude, 
+        char2Exclude, 
+        char3Exclude, 
+        char4Exclude, 
+        char5Exclude
+    } = req.body
+
+
+    if (positions.length < 5) {
+        res.status(400).json({message: "'position' value length must be 5 characters long"})
+    } else if (positions.length > 5) {
+        res.status(400).json({message: "'position' value length is capped at 5 characters"})
+    };
+
+    if (include.length < 5) {
+        res.status(400).json({message: "'position' value length must be 5 characters long"})
+    } else if (include.length > 5) {
+        res.status(400).json({message: "'position' value length is capped at 15 characters"})
+    };
+
+
+    next()
+};
+
+async function validatePositions(req, res, next) {
+    let { positions } = req.body;
+    
+    // Validates inclusion of key/value
+    if (!positions) {
+        res.status(400).json({message: "'posititions' missing from request"})
+    }
+    
+    // Validates length of value
+    if (positions.length < 5) {
+        res.status(400).json({message: "'position' value length must be 5 characters long"})
+    } else if (positions.length > 5) {
+        res.status(400).json({message: "'position' value length is capped at 5 characters"})
+    };
+
+    // Validates character types - only letters or underscores
+    const englishLetterRegex = /^[A-Za-z]$/;
+    for (let i = 0; i <= positions.length-1; i++) {
+        if (englishLetterRegex.test(positions[i]) === false && positions[i] !== '_') {
+            res.status(400).json({message: "invalid character"})
+        };
+    };
+
+    // Converts lowercase to uppercase
+    positions = positions.split('');
+    for (let i = 0; i <= positions.length-1; i++) {
+        if (positions[i].charCodeAt() >= 97 && positions[i].charCodeAt() <= 122) {
+            positions[i] = positions[i].toUpperCase()
+        };
+    };
+
+    req.body.positions = positions.join('')
+    next()
+};
+
 module.exports = {
-    validateReqShape
+    validatePositions
 }
