@@ -106,7 +106,7 @@ async function validatePositions(req, res, next) {
     const englishLetterRegex = /^[A-Za-z]$/;
     for (let i = 0; i <= positions.length-1; i++) {
         if (englishLetterRegex.test(positions[i]) === false && positions[i] !== '_') {
-            res.status(400).json({message: "invalid character"})
+            res.status(400).json({message: "invalid character"});
         };
     };
 
@@ -114,14 +114,54 @@ async function validatePositions(req, res, next) {
     positions = positions.split('');
     for (let i = 0; i <= positions.length-1; i++) {
         if (positions[i].charCodeAt() >= 97 && positions[i].charCodeAt() <= 122) {
-            positions[i] = positions[i].toUpperCase()
+            positions[i] = positions[i].toUpperCase();
         };
     };
 
-    req.body.positions = positions.join('')
+    req.body.positions = positions.join('');
     next()
 };
 
+function validateInclude(req, res, next) {
+    let { include } = req.body;
+
+    // Validates character types are letters
+    const englishLetterRegex = /^[A-Za-z]$/;
+    for (let i = 0; i <= include.length-1; i++) {
+        if (englishLetterRegex.test(include[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
+    
+    // Looks for lower case letters, and converts to upper case
+    include = req.body.include.toUpperCase();
+    
+    /*
+        Conditions:
+        1 - If the key is missing completely, we trigger an error and let the user know it's required.
+        2 - If the value is less than 5 characters in length, we replace the missing characters with underscores, which is required  by the query. I'm making the assumption here that this is intentional by the user.
+        3 - Include values greater than 5 characters won't technically break queries, but the model is not set up to accomodate queries of this length. This is by design b/c a Wordle user can't find more than 5 include letters per game (yellow tiles). For requests that breach the 5 character mark I'm triggering an error and letting them know. I think this is the best user experience.
+    */
+    if (include === undefined) {
+        res.status(400).json({message: "'include' missing from request"})
+    } else if (include.length < 5) {
+        req.body.include = include.padEnd(5, '_')
+    } else if (include.length > 5) {
+        res.status(400).json({message: "'include' length is capped at 5 characters"})
+    }
+    
+    next()
+};
+
+function validateExclude(req, res, next) {
+    
+};
+
+function validateCharExclude(req, res, next) {
+    
+};
+
 module.exports = {
-    validatePositions
+    validatePositions,
+    validateInclude
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Wordle = require('../models/wordle')
-const { validatePositions } = require('../middleware/wordleMiddleware')
+const { validatePositions, validateInclude } = require('../middleware/wordleMiddleware')
 
 /*
     Wordle POST Request
@@ -24,7 +24,7 @@ const { validatePositions } = require('../middleware/wordleMiddleware')
             See "include" above for example where no letters are passed in.
         [3] All values in request body have max size limits. Exclude max size is 15 characters, all other values max size is 5 characters.
 */
-router.post('/', validatePositions, (req, res, next) => {
+router.post('/', validatePositions, validateInclude, (req, res, next) => {
     Wordle.getWords(req.body)
         .then((words) => {
             res.status(200).header('Access-Control-Allow-Origin', '*').json(words)
