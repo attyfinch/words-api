@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Wordle = require('../models/wordle')
-const { validatePositions, validateInclude, validateExclude } = require('../middleware/wordleMiddleware')
+const { validatePositions, validateInclude, validateExclude, validateCharExclude } = require('../middleware/wordleMiddleware')
 
 /*
     Wordle POST Request
@@ -13,9 +13,9 @@ const { validatePositions, validateInclude, validateExclude } = require('../midd
             "exclude": "",
             "char1Exclude": "",
             "char2Exclude": "",
-            "char3Exclude": "____",
-            "char4Exclude": "R",
-            "char5Exclude": "E"
+            "char3Exclude": "",
+            "char4Exclude": "",
+            "char5Exclude": ""
         }
 
         Requirements + Notes
@@ -23,7 +23,7 @@ const { validatePositions, validateInclude, validateExclude } = require('../midd
         [2] "positions values should contain underscores where where there are no characters. 
         [3] All values in request body have max size limits. Exclude max size is 15 characters, all other values max size is 5 characters.
 */
-router.post('/', validatePositions, validateInclude, validateExclude, (req, res, next) => {
+router.post('/', validatePositions, validateInclude, validateExclude, validateCharExclude, (req, res, next) => {
     Wordle.getWords(req.body)
         .then((words) => {
             console.log(req.body)

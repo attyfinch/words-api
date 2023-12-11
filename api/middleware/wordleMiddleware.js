@@ -185,7 +185,72 @@ function validateExclude(req, res, next) {
 };
 
 function validateCharExclude(req, res, next) {
+    let { char1Exclude, char2Exclude, char3Exclude, 
+          char4Exclude, char5Exclude
+        } = req.body;
+
+    console.log(char1Exclude, char2Exclude, char3Exclude, char4Exclude, char5Exclude)
+        
+    // Validates that exclude key is present in the request
+    if (char1Exclude === undefined) res.status(400).json({message: "'char1Exclude' missing from request"})
+    if (char2Exclude === undefined) res.status(400).json({message: "'char2Exclude' missing from request"})
+    if (char3Exclude === undefined) res.status(400).json({message: "'char3Exclude' missing from request"})
+    if (char4Exclude === undefined) res.status(400).json({message: "'char4Exclude' missing from request"})
+    if (char5Exclude === undefined) res.status(400).json({message: "'char5Exclude' missing from request"})
+
+
+    // Validates character types are letters
+    const englishLetterRegex = /^[A-Za-z]$/;
+    for (let i = 0; i <= char1Exclude.length-1; i++) {
+        if (englishLetterRegex.test(char1Exclude[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
     
+    for (let i = 0; i <= char2Exclude.length-1; i++) {
+        if (englishLetterRegex.test(char2Exclude[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
+
+    for (let i = 0; i <= char3Exclude.length-1; i++) {
+        if (englishLetterRegex.test(char3Exclude[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
+
+    for (let i = 0; i <= char4Exclude.length-1; i++) {
+        if (englishLetterRegex.test(char4Exclude[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
+
+    for (let i = 0; i <= char5Exclude.length-1; i++) {
+        if (englishLetterRegex.test(char5Exclude[i]) === false) {
+            res.status(400).json({message: "invalid character"});
+        };
+    };
+
+    // Converts to uppercase (required for db search)
+    char1Exclude = char1Exclude.toUpperCase();
+    char2Exclude = char2Exclude.toUpperCase();
+    char3Exclude = char3Exclude.toUpperCase();
+    char4Exclude = char4Exclude.toUpperCase();
+    char5Exclude = char5Exclude.toUpperCase();
+            
+    // Validates value's length contraint and alerts user if so
+    if (char1Exclude.length > 5) res.status(400).json({message: "'char1Exclude' length is capped at 5 characters"})
+    if (char2Exclude.length > 5) res.status(400).json({message: "'char2Exclude' length is capped at 5 characters"})
+    if (char3Exclude.length > 5) res.status(400).json({message: "'char3Exclude' length is capped at 5 characters"})
+    if (char4Exclude.length > 5) res.status(400).json({message: "'char4Exclude' length is capped at 5 characters"})
+    if (char5Exclude.length > 5) res.status(400).json({message: "'char5Exclude' length is capped at 5 characters"})
+
+    req.body.char1Exclude = char1Exclude;
+    req.body.char2Exclude = char2Exclude;
+    req.body.char3Exclude = char3Exclude;
+    req.body.char4Exclude = char4Exclude;
+    req.body.char5Exclude = char5Exclude;
+    next()
 };
 
 module.exports = {
